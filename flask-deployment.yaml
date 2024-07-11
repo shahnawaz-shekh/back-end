@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: back-end
+  namespace: default
+  labels:
+    app: back-end
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: back-end
+  template:
+    metadata:
+      labels:
+        app: back-end
+    spec:
+      containers:
+      - name: back-end
+        image: gcr.io/cicdpipeline-428922/back-end:v1
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DB_HOST
+          value: "34.123.84.132"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASSWORD
+          value: "root"
+        - name: DB_NAME
+          value: "appdb"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: back-end
+  namespace: default
+spec:
+  type: LoadBalancer
+  selector:
+    app: back-end
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000

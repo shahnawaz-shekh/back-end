@@ -10,11 +10,11 @@ RUN pip install psycopg2-binary
 RUN pip install Flask-SQLAlchemy
 RUN pip install flask-cors
 
-# Make port 5000 available to the world outside this container
-EXPOSE 5000
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
 
 # Define environment variable
-ENV PORT=5000
+ENV PORT=8080
 
 # Copy the current directory contents into the container at /app
 COPY . .

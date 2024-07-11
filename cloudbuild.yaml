@@ -1,31 +1,30 @@
 steps:
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/back-end:$SHORT_SHA', '.']
-  
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/back-end:$SHORT_SHA']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/flask-app:$COMMIT_SHA', '.']
 
-  - name: 'gcr.io/cloud-builders/kubectl'
-    args:
-      - 'apply'
-      - '-f'
-      - 'flask-deployment.yaml'
-      - '--namespace=default'
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
-      
-  - name: 'gcr.io/cloud-builders/kubectl'
-    args:
-      - 'set'
-      - 'image'
-      - 'deployment/back-end'
-      - 'back-end=gcr.io/$PROJECT_ID/back-end:$SHORT_SHA'
-      - '--namespace=default'
-    env:
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
-      - 'CLOUDSDK_CONTAINER_CLUSTER=autopilot-cluster-1'
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/flask-app:$COMMIT_SHA']
+
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+  - 'apply'
+  - '-f'
+  - 'deployment.yaml'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=ica4'
+
+- name: 'gcr.io/cloud-builders/kubectl'
+  args:
+  - 'set'
+  - 'image'
+  - 'deployment/flask-app'
+  - 'flask-app=gcr.io/$PROJECT_ID/flask-app:$COMMIT_SHA'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=ica4'
+
 images:
-- 'gcr.io/$PROJECT_ID/back-end:$SHORT_SHA'
+- 'gcr.io/$PROJECT_ID/flask-app:$COMMIT_SHA'
 
-logsBucket: gs://sample-cicd-logs
+logsBucket: gs://test-bucket-for-cicd

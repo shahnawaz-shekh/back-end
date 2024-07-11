@@ -1,45 +1,40 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: back-end
-  namespace: default
-  labels:
-    app: back-end
+  name: flask-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: back-end
+      app: flask-app
   template:
     metadata:
       labels:
-        app: back-end
+        app: flask-app
     spec:
       containers:
-      - name: back-end
-        image: gcr.io/cicdpipeline-428922/back-end:v1
+      - name: flask-app
+        image: gcr.io/cicd-426201/flask-app:latest
         ports:
-        - containerPort: 5000
+        - containerPort: 8080
         env:
         - name: DB_HOST
-          value: "34.123.84.132"
-        - name: DB_USER
-          value: "root"
-        - name: DB_PASSWORD
-          value: "root"
+          value: "35.184.176.152"
         - name: DB_NAME
           value: "appdb"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASS
+          value: "root"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: back-end
-  namespace: default
+  name: flask-app-service
 spec:
   type: LoadBalancer
-  selector:
-    app: back-end
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 5000
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: flask-app
